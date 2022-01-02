@@ -12,5 +12,4 @@ public class SpringBootEcommerceApplication {
 		SpringApplication.run(SpringBootEcommerceApplication.class, args);
 	}
 
-
 }
