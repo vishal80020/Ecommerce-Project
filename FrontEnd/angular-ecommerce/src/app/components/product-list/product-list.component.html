@@ -17,6 +17,13 @@
 
                 </div>
 
+                <!--if products empty then display a message-->
+                <div *ngIf = "products?.length == 0" class="alert alert-warning cpl-md-12" role="alert">
+                    No Products Found
+                </div>
+                <!-- ?= safe Navigation Operator guards against null pr undefined  values
+                in property paths  kind of avoiding null pointer exception -->
+
 
             </div>
         </div>
