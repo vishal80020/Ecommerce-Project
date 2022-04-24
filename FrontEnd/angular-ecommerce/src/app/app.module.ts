@@ -35,7 +35,7 @@ const routes: Routes = [
 		RouterModule.forRoot(routes), //configure your routes
 		BrowserModule,
 		HttpClientModule,
-		NgModule
+		NgbModule
 	],
 	providers: [ProductService],
 	bootstrap: [AppComponent]
