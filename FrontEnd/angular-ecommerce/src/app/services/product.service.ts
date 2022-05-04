@@ -23,6 +23,16 @@ export class ProductService {
 		return this.httpClient.get<Product>(productUrl);
 	}
 
+	getProductListPaginate(thePage: number,
+							thePageSize: number,
+							theCategoryId: number): Observable<GetResponseProducts> {
+		// need to build URL based on category id, page and size 
+		const searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${theCategoryId}`
+						+ `&page=${thePage}&size=${thePageSize}`;
+
+		return this.httpClient.get<GetResponseProducts>(searchUrl);
+	}
+
 	getProductList(theCategoryId: number): Observable<Product[]> {
 		// need to build URL based on category id
 		const searchUrl = `${this.baseUrl}/search/findByCategoryId?id=${theCategoryId}`;
@@ -51,11 +61,19 @@ export class ProductService {
 	}
 }
 
+//added page key to leverage pagination support given by spring as meta data
 interface GetResponseProducts {
 	_embedded: {
 		products: Product[]
-	}
+	},
+	page : {
+		size: number, //batch size
+		totalElements: number, // total enteries present
+		totalPages: number,  //total number of page(totalElements/size)
+		number: number  // current page number
+	  }
 }
+
 interface GetResponseProductCategory {
 	_embedded: {
 		productCategory: ProductCategory[]
