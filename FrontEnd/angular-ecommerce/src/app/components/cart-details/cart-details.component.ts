@@ -24,7 +24,7 @@ export class CartDetailsComponent implements OnInit {
 		console.log("Hello Cart ^^^^^^^^^^^^^%%%%%%%%%%%%%%%");
 		this.cartItems = this.cartServie.cartItems;
 
-		console.log(`cartItems: ${this.cartItems[0].name}`);
+		// console.log(`cartItems: ${this.cartItems[0].name}`);
 
 		
 		//subscribe to the totalPrice
