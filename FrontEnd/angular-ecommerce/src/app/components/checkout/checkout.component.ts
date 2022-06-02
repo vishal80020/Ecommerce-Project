@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Country } from 'src/app/common/country';
+import { State } from 'src/app/common/state';
 import { LuvToShopFormService } from 'src/app/services/luv-to-shop-form.service';
 
 
@@ -17,6 +19,10 @@ export class CheckoutComponent implements OnInit {
 
 	creditCardYears: number[] = [];
 	creditCardMonths: number[] = [];
+
+	countries: Country[] =  [];
+	shippingAddressStates: State[] = [];
+	billingAddressStates: State[] = [];
 
 	constructor(private formBuilder: FormBuilder,
 				private luvToShopFormService: LuvToShopFormService ) { }
@@ -68,7 +74,16 @@ export class CheckoutComponent implements OnInit {
 				console.log(`received credit card years ${JSON.stringify(data)}`);
 				this.creditCardYears = data;
 			}
-		)
+		);
+
+		//populate countries 
+		this.luvToShopFormService.getCountries().subscribe(
+			data => {
+				console.log(`received countries ${JSON.stringify(data)}`);
+				this.countries = data;
+			}
+		);
+
 
 	}
 
@@ -76,10 +91,17 @@ export class CheckoutComponent implements OnInit {
 		if(event.target.checked) {
 			this.checkoutFormGroup.controls.billingAddress
 				.setValue(this.checkoutFormGroup.controls.shippingAddress.value);
+
+			// the state value was not changing because in template we are iterating
+			//over billingAddressStates so we need to fix that
+			this.billingAddressStates = this.shippingAddressStates;	
 		} else {
 			// suppose some body checked the check box then value will be copied 
 			// to billing address and now again they unchecked so we need to reset the form
 			this.checkoutFormGroup.controls.billingAddress.reset();
+
+			//reset the billingAddressStates
+			this.billingAddressStates = [];
 		}
 	}
 
@@ -114,5 +136,27 @@ export class CheckoutComponent implements OnInit {
 			}
 		);
 		
+	}
+
+	getStates(formGroupName: string) {
+		const formGroup = this.checkoutFormGroup.get(formGroupName);
+		const countryCode: string = formGroup.value.country.code;
+		const countryName: string = formGroup.value.country.name;
+		console.log(`${formGroupName} country code: ${countryCode}`);
+		console.log(`${formGroupName} country name: ${countryName}`);
+
+		this.luvToShopFormService.getStates(countryCode).subscribe(
+			data => {
+				if(formGroupName==='shippingAddress') {
+					this.shippingAddressStates = data;
+				} else {
+					this.billingAddressStates = data;
+				}
+
+				//select first item in state default
+				formGroup.get('state').setValue(data[0]);
+				
+			}
+		);
 	}
 }
