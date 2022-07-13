@@ -6,14 +6,25 @@ import { CartItem } from '../common/cart-item';
 	providedIn: 'root'
 })
 export class CartService {
-	
+
 	cartItems: CartItem[] = [];
 
 	totalPrice: Subject<number> = new BehaviorSubject<number>(0);
 	totalQuantity: Subject<number> = new BehaviorSubject<number>(0);
 
+	// storage: Storage = sessionStorage //sessionStorage is reference to browser sessionStorage
+	storage: Storage = localStorage
+	constructor() {
+		//read the data from storage
+		let data = JSON.parse(this.storage.getItem('cartItems')); //cartItems we can use any name but be consistent throughout the application
+		if (data != null) {
+			this.cartItems = data;
 
-	constructor() { }
+			// compute totals based on data that is read from storage
+			this.computeCartTotals();
+		}
+
+	}
 
 	addToCart(theCartItem: CartItem) {
 
@@ -27,8 +38,8 @@ export class CartService {
 			// if cart is not empty
 			//find whether item currently being added is present in cart already
 			// search through all items in cart
-			for(let tempCartItem of this.cartItems){
-				if(tempCartItem.id === theCartItem.id) {
+			for (let tempCartItem of this.cartItems) {
+				if (tempCartItem.id === theCartItem.id) {
 					//found the item currently being added in the cart is
 					//already present 
 					existingCartItem = tempCartItem; // here tempCartItem reference is passed to existingCartItem
@@ -37,7 +48,7 @@ export class CartService {
 				}
 			}
 		}
-		if(alreadyExistsInCart) {
+		if (alreadyExistsInCart) {
 			// we have found that item is already present in cart so no need to add the item itself
 			//just increase the quantity of it
 			existingCartItem.quantity++;
@@ -53,8 +64,8 @@ export class CartService {
 		let totalPriceValue: number = 0;
 		let totalQuantityValue: number = 0;
 
-		for(let currentCartItem of this.cartItems) {
-			totalPriceValue += currentCartItem.unitPrice*currentCartItem.quantity;
+		for (let currentCartItem of this.cartItems) {
+			totalPriceValue += currentCartItem.unitPrice * currentCartItem.quantity;
 			totalQuantityValue += currentCartItem.quantity;
 		}
 
@@ -63,12 +74,22 @@ export class CartService {
 		this.totalQuantity.next(totalQuantityValue);
 
 		//log cart data just for debugging purpose
-		this.logCartData(totalPriceValue,totalQuantityValue);
+		this.logCartData(totalPriceValue, totalQuantityValue);
+
+		//persit the cart data
+		this.persistCartItems();
 	}
+
+	persistCartItems() {
+		this.storage.setItem('cartItems', JSON.stringify(this.cartItems));
+	}
+
+
+
 	logCartData(totalPriceValue: number, totalQuantityValue: number) {
 		console.log(`Contents of the cart: `);
-		for(let tempCartItem of this.cartItems){
-			const subTotalPrice = tempCartItem.quantity*tempCartItem.unitPrice;
+		for (let tempCartItem of this.cartItems) {
+			const subTotalPrice = tempCartItem.quantity * tempCartItem.unitPrice;
 			console.log(`name: ${tempCartItem.name},quantity= ${tempCartItem.quantity},unitPrice= ${tempCartItem.unitPrice},subTotalPrice = ${subTotalPrice}`);
 		}
 		console.log(`totalPriceValue: ${totalPriceValue.toFixed(2)},quantity: ${totalQuantityValue}`);
@@ -76,11 +97,11 @@ export class CartService {
 	}
 
 	decrementQuantity(theCartItem: CartItem) {
-		
+
 		// We are passing data (object) component and service. Since data is being passed as an object, it will "Pass by Reference"
 		theCartItem.quantity--;
 
-		if(theCartItem.quantity === 0) {
+		if (theCartItem.quantity === 0) {
 			this.remove(theCartItem);
 		} else {
 			this.computeCartTotals();
@@ -89,11 +110,11 @@ export class CartService {
 	}
 	remove(theCartItem: CartItem) {
 		//get index of the item in an array 
-		const itemIndex = this.cartItems.findIndex(tempCartItem => tempCartItem.id=== theCartItem.id );
+		const itemIndex = this.cartItems.findIndex(tempCartItem => tempCartItem.id === theCartItem.id);
 
 		//if found remove the item from the array
-		if(itemIndex > -1) {
-			this.cartItems.splice(itemIndex,1);
+		if (itemIndex > -1) {
+			this.cartItems.splice(itemIndex, 1);
 			this.computeCartTotals();
 		}
 	}
