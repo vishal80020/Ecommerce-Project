@@ -7,6 +7,7 @@ import javax.persistence.metamodel.EntityType;
 
 import com.vishal.ecommerce.entity.State;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
@@ -21,6 +22,9 @@ import java.util.Set;
 @Configuration
 public class MyDataRestConfig implements RepositoryRestConfigurer {
 
+    @Value("${allowed.origins}") //this is coming from application.properties file
+    private  String[] theAllowedOrigins;
+
     private EntityManager entityManager;
 
     @Autowired
@@ -33,7 +37,8 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
         RepositoryRestConfigurer.super.configureRepositoryRestConfiguration(config, cors);
 
         HttpMethod[] theUnsupportedActions = {
-                HttpMethod.POST,HttpMethod.PUT,HttpMethod.DELETE
+                HttpMethod.POST,HttpMethod.PUT,
+                HttpMethod.DELETE, HttpMethod.PATCH
         };
         //disable http method for Product: POST, PUT, DELETE
         disableHttpMethods(Product.class,config, theUnsupportedActions);
@@ -49,6 +54,10 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
 
         //call an internal helper method to expose entity ids
         exposeIds(config);
+
+        //config cors mapping
+//        cors.addMapping("/api/**").allowedOrigins("http://localhost:4200");
+        cors.addMapping(config.getBasePath() + "/**").allowedOrigins(theAllowedOrigins);
 
     }
 

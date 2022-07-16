@@ -4,12 +4,13 @@ import com.vishal.ecommerce.entity.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestParam;
 
 //origin = protocol + hostname + port
 
-@CrossOrigin("http://localhost:4200") //Accept calls from web browser scripts from this origin
+@RepositoryRestResource
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     //behind the scene
