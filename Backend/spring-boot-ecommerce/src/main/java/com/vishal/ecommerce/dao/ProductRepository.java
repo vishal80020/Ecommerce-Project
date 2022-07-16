@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 //origin = protocol + hostname + port
 
-@CrossOrigin("http://localhost:4200") //Accept calls from web browser scripts from this origin
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     //behind the scene

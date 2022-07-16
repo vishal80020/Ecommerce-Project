@@ -16,6 +16,5 @@ when we hit localhost:8080/api will be able to understand more
 
 //origin = protocol + hostname + port
 
-@CrossOrigin("http://localhost:4200") //Accept calls from web browser scripts from this origin
 public interface ProductCategoryRepository extends JpaRepository<ProductCategory,Long> {
 }
