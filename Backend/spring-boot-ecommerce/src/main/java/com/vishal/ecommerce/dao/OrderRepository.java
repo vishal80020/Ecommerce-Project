@@ -11,5 +11,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 public interface OrderRepository extends JpaRepository<Order,Long> {
 
 //    http://localhost:8080/api/orders/search/findByCustomerEmail?email=afasa@test.com
-    Page<Order> findByCustomerEmail(@Param("email") String email, Pageable pageable);
+//    Page<Order> findByCustomerEmail(@Param("email") String email, Pageable pageable);
+        Page<Order> findByCustomerEmailOrderByDateCreatedDesc(@Param("email") String email, Pageable pageable);
 }
