@@ -1,11 +1,9 @@
 package com.vishal.ecommerce.config;
 
-import com.vishal.ecommerce.entity.Country;
-import com.vishal.ecommerce.entity.Product;
-import com.vishal.ecommerce.entity.ProductCategory;
+import com.vishal.ecommerce.entity.*;
+
 import javax.persistence.metamodel.EntityType;
 
-import com.vishal.ecommerce.entity.State;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -40,17 +38,20 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
                 HttpMethod.POST,HttpMethod.PUT,
                 HttpMethod.DELETE, HttpMethod.PATCH
         };
-        //disable http method for Product: POST, PUT, DELETE
+        //disable http method for Product: POST, PUT, DELETE, PATCH
         disableHttpMethods(Product.class,config, theUnsupportedActions);
 
-        //disable http method for ProductCategory: POST, PUT, DELETE
+        //disable http method for ProductCategory: POST, PUT, DELETE, PATCH
         disableHttpMethods(ProductCategory.class,config, theUnsupportedActions);
 
-        //disable http method for Country: POST, PUT, DELETE
+        //disable http method for Country: POST, PUT, DELETE, PATCH
         disableHttpMethods(Country.class,config, theUnsupportedActions);
 
-        //disable http method for State: POST, PUT, DELETE
+        //disable http method for State: POST, PUT, DELETE, PATCH
         disableHttpMethods(State.class,config, theUnsupportedActions);
+
+        //disable http method for Order: POST, PUT, DELETE, PATCH
+        disableHttpMethods(Order.class,config, theUnsupportedActions);
 
         //call an internal helper method to expose entity ids
         exposeIds(config);
